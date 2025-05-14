@@ -10,7 +10,7 @@ const functions = require('./functions');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-//SQL
+//SQL 
 const mysql = require('mysql2');
 const { log, error } = require("console");
 const connection = mysql.createConnection({
@@ -82,18 +82,18 @@ app.post("/api/register", async (req, res) => {
 });
 
 app.post("/api/login", (req, res) => {
-  const { username, schoolCode } = req.body;
+const { user_name, school_id } = req.body;
   console.log("BODY:", req.body);
-  if (!username || !schoolCode) {
+  if (!user_name || !school_id) {
     return res.status(400).json({ message: "Username and school ID are required." });
   }
 
   const query = `
-    SELECT * FROM player_data 
+    SELECT * FROM player_data
     WHERE user_name = ? AND school_id = ?
   `;
 
-  connection.execute(query, [username, schoolCode], (err, results) => {
+  connection.execute(query, [user_name, school_id], (err, results) => {
     if (err) {
       console.error("Error executing query:", err);
       return res.status(500).json({ message: "An error occurred while logging in." });

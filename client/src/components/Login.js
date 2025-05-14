@@ -16,29 +16,33 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+  e.preventDefault();
+  try {
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
 
-      const result = await response.json();
+    console.log("Raw response:", response);
 
-      if (response.ok) {
-        setMessage("Login successful!");
-        console.log("User logged in:", result);
-      } else {
-        setMessage(result.message || "Failed to login.");
-      }
-    } catch (err) {
-      console.error("Error during login:", err);
-      setMessage("Something went wrong. Please try again.");
+    const result = await response.json();
+    console.log("Parsed result:", result);
+
+    if (response.ok) {
+      setMessage("Login successful!");
+      console.log("User logged in:", result);
+    } else {
+      setMessage(result.message || "Failed to login.");
     }
-  };
+  } catch (err) {
+    console.error("Error during login:", err);
+    setMessage("Something went wrong. Please try again.");
+  }
+};
+
 
   return (
     <div className="login-container">
