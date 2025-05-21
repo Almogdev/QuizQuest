@@ -10,8 +10,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
     "md5": "^2.3.0",
     "mysql2": "^3.12.0"
   }

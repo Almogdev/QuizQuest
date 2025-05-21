@@ -26,14 +26,15 @@ const Login = () => {
       body: JSON.stringify(formData),
     });
 
-    console.log("Raw response:", response);
-
     const result = await response.json();
-    console.log("Parsed result:", result);
 
     if (response.ok) {
+      // שמירת הטוקן והמשתמש בזיכרון
+      localStorage.setItem("token", result.token);
+      localStorage.setItem("user", JSON.stringify(result.user));
+
       setMessage("Login successful!");
-      console.log("User logged in:", result);
+      navigate("/"); // חזרה לדף הבית
     } else {
       setMessage(result.message || "Failed to login.");
     }
@@ -42,7 +43,6 @@ const Login = () => {
     setMessage("Something went wrong. Please try again.");
   }
 };
-
 
   return (
     <div className="login-container">

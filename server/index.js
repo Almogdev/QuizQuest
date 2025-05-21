@@ -5,8 +5,9 @@ const PORT = 3001;
 const bodyParser = require('body-parser');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const md5 = require('md5');
+const bcrypt = require('bcrypt');
 const functions = require('./functions');
+const jwt = require('jsonwebtoken');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
@@ -35,10 +36,6 @@ app.use(express.static(path.join(__dirname, "../client/build")));
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, ".")));
-
-app.get("/api/example", (req, res) => {
-  res.json({ message: "Hello from the backend!" });
-});
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));
@@ -106,8 +103,14 @@ const { user_name, school_id } = req.body;
 
     // User found
     const user = results[0];
+    const token = jwt.sign(
+      { id: user.id, name: user.user_name, school_id: user.school_id },
+      "my_super_secret_key", //
+      { expiresIn: "1h" }
+    );
     res.status(200).json({
       message: "Login successful!",
+      token: token,
       user: {
         id: user.id,
         name: user.name,
@@ -115,6 +118,7 @@ const { user_name, school_id } = req.body;
       },
     });
   });
+
 });
 
 app.get("/api/questions/:quiz_id", (req, res) => {
