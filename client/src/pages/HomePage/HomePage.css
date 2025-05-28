@@ -12,39 +12,7 @@ div {
   margin: 0 auto;
 }
 
-/* כותרת עליונה */
-header {
-  display: flex;
-  justify-content: space-between; /* מציב את האלמנטים בקצוות */
-  align-items: center;
-  background-color: #4caf50;
-  color: white;
-  padding: 10px 20px;
-  position: relative; /* מאפשר יישור מדויק */
-}
-header .logo-container {
-  flex-grow: 1; /* גורם ללוגו לתפוס את האמצע */
-  display: flex;
-  justify-content: center; /* ממקם את הלוגו במרכז */
-}
 
-header img.logo {
-  height: 80px; /* גובה מקסימלי ללוגו */
-  max-width: 150px; /* הגבלת רוחב */
-  object-fit: contain; /* מתאים את התמונה */
-}
-
-header button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-header button:hover {
-  text-decoration: underline;
-}
 
 /* כפתורים מרכזיים */
 main {

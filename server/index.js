@@ -108,6 +108,7 @@ const { user_name, school_id } = req.body;
       "my_super_secret_key", //
       { expiresIn: "1h" }
     );
+
     res.status(200).json({
       message: "Login successful!",
       token: token,
@@ -132,6 +133,40 @@ app.get("/api/questions/:quiz_id", (req, res) => {
       return res.status(500).json({ message: "Database error" });
     }ש
     res.status(200).json(results);
+  });
+});
+
+app.get("/api/profile", (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ message: "Missing token" });
+  }
+
+  // הוצאת הטוקן מתוך "Bearer ..."
+  const token = authHeader.split(" ")[1];
+
+  jwt.verify(token, "my_super_secret_key", (err, decoded) => {
+    if (err) {
+      return res.status(403).json({ message: "Invalid or expired token" });
+    }
+
+    const userId = decoded.id;
+
+    const query = `SELECT * FROM player_data WHERE id = ?`;
+
+    connection.execute(query, [userId], (err, results) => {
+      if (err) {
+        return res.status(500).json({ message: "DB error" });
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      // שליחת פרטי המשתמש ללקוח
+      const user = results[0];
+      res.json(user);
+    });
   });
 });
 

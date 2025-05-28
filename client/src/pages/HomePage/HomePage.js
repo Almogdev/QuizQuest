@@ -19,7 +19,7 @@ const HomePage = () => {
         {!isGameStarted ? (
           <>
             <button>Start Quiz</button>
-            <button disabled={!userData}>Create Quiz</button>
+            <button>Create Quiz</button>
             <button>Leaderboard</button>
           </>
         ) : (

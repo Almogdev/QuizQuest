@@ -1,0 +1,85 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #4caf50;
+  padding: 10px 20px;
+  position: relative;
+  height: 100px;
+}
+
+/* שמאל */
+.header-left {
+  display: flex;
+  gap: 10px;
+}
+
+/* מרכז */
+.header-logo {
+  height: 80px;
+  max-width: 150px;
+  object-fit: contain;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ימין */
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  position: relative;
+}
+
+.profile-button {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid white;
+}
+
+/* תפריט */
+.profile-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: max-content;
+  max-width: 200px;
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  margin-top: 10px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  padding: 5px;
+  display: flex;
+  gap: 5px;
+  flex-direction: column-reverse;
+  z-index: 1000;
+}
+
+.profile-menu.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.profile-menu button {
+  width: 100%;
+  background-color: #5b17d7;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.profile-menu button:hover {
+  background-color: #4a0ec9;
+}
