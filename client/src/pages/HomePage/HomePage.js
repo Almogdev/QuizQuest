@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./HomePage.css";
 import Header from "../../components/Header/Header.js";
 import Footer from "../../components/Footer/Footer.js";
 
 const HomePage = () => {
+  const navigate = useNavigate();
   const [userData, setUserData] = useState(() => {
     const savedUser = localStorage.getItem("user");
     return savedUser ? JSON.parse(savedUser) : null;
@@ -18,7 +20,7 @@ const HomePage = () => {
       <main>
         {!isGameStarted ? (
           <>
-            <button>Start Quiz</button>
+            <button onClick={() => navigate("/game")}>Start Quiz</button>
             <button>Create Quiz</button>
             <button>Leaderboard</button>
           </>

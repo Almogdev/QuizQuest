@@ -34,7 +34,7 @@ const Header = ({ userData, setUserData }) => {
     <header className="header">
       <div className="header-left">
         <button>⚙️ Settings</button>
-        <button>🏠 Back to Home page</button>
+        <button onClick={() => navigate("/")}>🏠 Back to Home page</button>
       </div>
 
       <img src={Logo} alt="QuizQuest Logo" className="header-logo" />
