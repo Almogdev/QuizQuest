@@ -37,10 +37,6 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, ".")));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/build/index.html"));
-});
-
 app.post("/api/register", async (req, res) => {
   let user_name = req.body.username;
   let schoolID = req.body.schoolCode;
@@ -79,7 +75,7 @@ app.post("/api/register", async (req, res) => {
 });
 
 app.post("/api/login", (req, res) => {
-const { user_name, school_id } = req.body;
+  const { user_name, school_id } = req.body;
   console.log("BODY:", req.body);
   if (!user_name || !school_id) {
     return res.status(400).json({ message: "Username and school ID are required." });
@@ -123,18 +119,26 @@ const { user_name, school_id } = req.body;
 });
 
 app.get("/api/questions/:quiz_id", (req, res) => {
-  const quizId = req.params.quiz_id;
+  const quiz_id = Number(req.params.quiz_id); // לוקח מה-URL
 
   const query = "SELECT * FROM questions WHERE quiz_id = ?";
-  
-  connection.execute(query, [quizId], (err, results) => {
+
+  connection.execute(query, [quiz_id], (err, results) => {
     if (err) {
       console.error("Error fetching questions:", err);
       return res.status(500).json({ message: "Database error" });
-    }ש
-    res.status(200).json(results);
+    }
+
+    const formattedQuestions = results.map((row) => ({
+      question: row.question,
+      answers: [row.answer_1, row.answer_2, row.answer_3, row.answer_4],
+      correctAnswerIndex: row.correct_answer - 1,
+    }));
+
+    res.status(200).json(formattedQuestions);
   });
 });
+
 
 app.get("/api/profile", (req, res) => {
   const authHeader = req.headers.authorization;
@@ -168,6 +172,80 @@ app.get("/api/profile", (req, res) => {
       res.json(user);
     });
   });
+});
+
+//get all quizes
+app.get("/api/quizzes", (req, res) => {
+  const query = `
+    SELECT q.id, q.name, q.category, q.difficulty, q.image_url,
+           COUNT(ques.id) AS questions_count
+    FROM quizzes q
+    LEFT JOIN questions ques ON q.id = ques.quiz_id
+    GROUP BY q.id
+    ORDER BY q.id DESC
+  `;
+  connection.execute(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching quizzes:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    res.json(results);
+  });
+});
+
+//get 1 quiz
+app.get("/api/questions/:quiz_id", (req, res) => {
+  const quiz_id = req.params.quiz_id;
+
+  const query = "SELECT * FROM questions WHERE quiz_id = ?";
+  connection.execute(query, [quiz_id], (err, results) => {
+    if (err) {
+      console.error("Error fetching questions:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    // ממפים בדיוק לעמודות שלך: answer_1..answer_4 + correct_answer_index (1-based)
+    const formatted = results.map((row) => {
+      const answers = [
+        row.answer_1,
+        row.answer_2,
+        row.answer_3,
+        row.answer_4,
+      ].map((x) => (x == null ? "" : String(x)));
+
+      const zeroBased =
+        Number.isFinite(Number(row.correct_answer_index)) &&
+          row.correct_answer_index >= 1 &&
+          row.correct_answer_index <= answers.length
+          ? Number(row.correct_answer_index) - 1
+          : 0;
+
+      return {
+        question: row.question ?? "",
+        answers,
+        correctAnswerIndex: zeroBased, // ← מחזירים 0-based ללקוח
+      };
+    });
+
+    res.status(200).json(formatted);
+  });
+});
+
+app.get("/api/quiz/:quiz_by_id", (req, res) => {
+  let current_question_id = 1;
+  let quiz = [];
+  let question_to_insert = {
+    id: current_question_id,
+    answer_1: "",
+    answer_2: "",
+    answer_3: "",
+    answer_4: "",
+    currect_answer: ""
+  }
+})
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/build/index.html"));
 });
 
 app.listen(PORT, () => {

@@ -4,6 +4,7 @@ import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import ProfilePage from "./pages/Profile/ProfilePage";
 import LeaderboardPage from "./pages/Leaderboard/LeaderboardPage";
+import GameMainMenu from "./pages/GameMainMenu/GameMainMenu";
 import GamePage from "./pages/GamePage/GamePage";
 
 function App() {
@@ -26,8 +27,12 @@ function App() {
           {/* טבלת מובילים + מפה ארצית */}
           <Route path="/leaderboard" element={<LeaderboardPage />} />
 
+          {/* תפריט משחק */}
+          <Route path="/game-menu" element={<GameMainMenu />} />
+
           {/* דף המשחק */}
-          <Route path="/game" element={<GamePage />} />
+          <Route path="/game/:id" element={<GamePage />} />
+
         </Routes>
       </Router>
     </div>

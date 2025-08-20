@@ -20,7 +20,7 @@ const HomePage = () => {
       <main>
         {!isGameStarted ? (
           <>
-            <button onClick={() => navigate("/game")}>Start Quiz</button>
+            <button onClick={() => navigate("/game-menu")}>Start Quiz</button>
             <button>Create Quiz</button>
             <button>Leaderboard</button>
           </>

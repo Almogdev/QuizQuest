@@ -1,57 +1,101 @@
+/* client/src/components/QuizGame/QuizGame.css */
+
 .quiz-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    height: 100vh;
-    padding: 40px;
-    gap: 40px;
+    gap: 16px;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
-.game-frame {
-    width: 900px;
-    height: 500px;
-    margin: 50px auto;
-    border: 8px solid #333;
-    border-radius: 16px;
-    background-color: #f9f9f9;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
-    overflow: hidden;
-    position: relative;
-}
-
-.left-side {
+.left-side,
+.right-side {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    gap: 12px;
 }
 
 .info-panel {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
+}
+
+.citizen-count-box,
+.feedback-box,
+.question-box {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.feedback-box {
+    min-height: 40px;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.feedback-box.visible {
+    opacity: 1;
+}
+
+.game-frame {
+    position: relative;
+    height: 260px;
+    border: 2px solid #aaa;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f2f2f2;
 }
 
 .citizens-panel {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
     display: flex;
-    justify-content: center;
-    gap: 10px;
     align-items: flex-end;
-    padding-bottom: 10px;
+    gap: 10px;
+    min-height: 64px;
 }
 
 .citizen-img {
-    width: 100px;
+    width: 64px;
     height: auto;
-    image-rendering: pixelated;
-
+    object-fit: contain;
 }
 
-.right-side {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
+/* Answers */
+.answers-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.answer-button,
+.restart-button {
+    padding: 14px 18px;
+    font-size: 1.1rem;
+    min-width: 96px;
+    border-radius: 12px;
+    border: 1px solid #bca7ff;
+    background: #5b2cff;
+    color: white;
+    cursor: pointer;
+}
+
+.answer-button:hover:not(:disabled) {
+    filter: brightness(1.05);
+}
+
+.answer-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.end-screen {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 16px;
 }
