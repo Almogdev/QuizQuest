@@ -2,169 +2,165 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./QuizGame.css";
 
-// טקסטים בסיסיים בתוך הקובץ
 const Texts = {
-    loading_questions: "Loading questions...",
-    correct_answer_alert: "Correct! Great job!",
-    wrong_answer_alert: "Oops! That's not correct.",
-    citizen_counter_label: "Citizens:",
-    end_title: "Quiz finished!",
-    end_summary: (score, total) => `You scored ${score} out of ${total}.`,
+    loading: "Loading questions...",
+    error: "Failed to load questions.",
+    correct: "Correct! Great job!",
+    wrong: "Oops! That's not correct.",
+    citizens: "Citizens:",
+    endTitle: "Quiz finished!",
+    endSummary: (score, total) => `You scored ${score} out of ${total}.`,
     restart: "Restart",
 };
 
-// ספרייטים (ודא שהקבצים קיימים)
 import civ1 from "../../assets/civ1.png";
 import civ2 from "../../assets/civ2.png";
 import civ3 from "../../assets/civ3.png";
-const CIVILIANS = [civ1, civ2, civ3];
+import gameBg from "../../assets/game_bg.png";
+
+const CIVS = [civ1, civ2, civ3];
+const MAX_SPRITES = CIVS.length;
 
 const QuizGame = ({ onFinish }) => {
-    const { id } = useParams();            // /game/:id
+    const { id } = useParams();
     const quizId = Number(id) > 0 ? Number(id) : 1;
 
     const [questions, setQuestions] = useState([]);
-    const [currentIndex, setCurrentIndex] = useState(0);
+    const [idx, setIdx] = useState(0);
     const [feedback, setFeedback] = useState("");
-    const [citizenCount, setCitizenCount] = useState(1);
-    const [score, setScore] = useState(0);
-    const [isLocked, setIsLocked] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [citizens, setCitizens] = useState(0);
+    const [locked, setLocked] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [loadError, setLoadError] = useState("");
     const [finished, setFinished] = useState(false);
 
     useEffect(() => {
         let cancel = false;
+
         const load = async () => {
-            setIsLoading(true);
+            setLoading(true);
             setLoadError("");
             setQuestions([]);
-            setCurrentIndex(0);
+            setIdx(0);
             setFeedback("");
-            setCitizenCount(1);
-            setScore(0);
-            setIsLocked(false);
+            setCitizens(0);
+            setLocked(false);
             setFinished(false);
 
             try {
-                const res = await fetch(`/api/questions/${quizId}`);
+                const res = await fetch(`/api/quiz/${quizId}`);
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
-
-                // מצפים: [{ question, answers: [..], correctAnswerIndex }]
-                const normalized = (Array.isArray(data) ? data : []).map((q) => ({
+                const list = Array.isArray(data?.questions) ? data.questions : [];
+                const normalized = list.map((q) => ({
                     question: q.question ?? "",
-                    answers: (q.answers ?? []).map((a) => (a == null ? "" : String(a))),
-                    correctAnswerIndex: Number(q.correctAnswerIndex ?? 0),
+                    answers: (q.answers ?? [])
+                        .map((a) => String(a ?? "").trim())
+                        .filter(Boolean),
+                    correctAnswer: String(q.correctAnswer ?? "").trim(),
                 }));
-
                 if (!cancel) setQuestions(normalized);
             } catch (e) {
-                console.error("Failed to fetch questions:", e);
-                if (!cancel) setLoadError("Failed to load questions.");
+                console.error(e);
+                if (!cancel) setLoadError(Texts.error);
             } finally {
-                if (!cancel) setIsLoading(false);
+                if (!cancel) setLoading(false);
             }
         };
+
         load();
-        return () => { cancel = true; };
+        return () => {
+            cancel = true;
+        };
     }, [quizId]);
 
-    const currentQuestion = useMemo(
-        () => (questions.length ? questions[currentIndex] : null),
-        [questions, currentIndex]
-    );
+    const cur = useMemo(() => (questions.length ? questions[idx] : null), [questions, idx]);
 
-    if (isLoading) return <div>{Texts.loading_questions}</div>;
-    if (loadError) return <div>{loadError}</div>;
-    if (!currentQuestion) return <div>{Texts.loading_questions}</div>;
+    if (loading) return <div className="status">{Texts.loading}</div>;
+    if (loadError) return <div className="status error">{loadError}</div>;
+    if (!cur) return <div className="status">{Texts.loading}</div>;
 
-    const handleAnswerClick = (index) => {
-        if (isLocked || finished) return;
-        setIsLocked(true);
+    const handleClick = (answerText) => {
+        if (locked || finished) return;
+        setLocked(true);
 
-        const isCorrect = index === currentQuestion.correctAnswerIndex;
+        const clicked = String(answerText ?? "").trim();
+        const correct = String(cur.correctAnswer ?? "").trim();
+        const isCorrect = clicked === correct;
 
-        if (isCorrect) {
-            setFeedback(Texts.correct_answer_alert);
-            setScore((s) => s + 1);
-            setCitizenCount((prev) => Math.min(prev + 1, CIVILIANS.length));
-        } else {
-            setFeedback(Texts.wrong_answer_alert);
-            setCitizenCount((prev) => Math.max(prev - 1, 1));
-        }
+        // Use functional updates so we always add/remove exactly one
+        setCitizens((prev) => (isCorrect ? prev + 1 : Math.max(prev - 1, 0)));
+        setFeedback(isCorrect ? Texts.correct : Texts.wrong);
 
         setTimeout(() => {
             setFeedback("");
-            setIsLocked(false);
+            setLocked(false);
 
-            setCurrentIndex((prev) => {
-                const next = prev + 1;
+            setIdx((prevIdx) => {
+                const next = prevIdx + 1;
                 if (next < questions.length) return next;
 
-                // סיום
-                const finalScore = isCorrect ? score + 1 : score;
                 setFinished(true);
                 if (typeof onFinish === "function") {
-                    onFinish({ score: finalScore, total: questions.length });
+                    // Compute final score from the latest state after the functional update
+                    // Note: queue a microtask to read the latest value
+                    Promise.resolve().then(() => {
+                        onFinish({ score: document.querySelector(".pill")?.textContent?.match(/\d+$/)?.[0] ? Number(document.querySelector(".pill").textContent.match(/\d+$/)[0]) : 0, total: questions.length });
+                    });
                 }
-                return prev;
+                return prevIdx;
             });
         }, 800);
     };
 
-    const handleRestart = () => {
-        setCurrentIndex(0);
+    const restart = () => {
+        setIdx(0);
         setFeedback("");
-        setCitizenCount(1);
-        setScore(0);
-        setIsLocked(false);
+        setCitizens(0);
+        setLocked(false);
         setFinished(false);
     };
 
     return (
         <div className="quiz-container">
-            {/* LEFT */}
             <div className="left-side">
                 <div className="info-panel">
-                    <div className="citizen-count-box">
-                        {Texts.citizen_counter_label} {citizenCount}
+                    <div className="pill">
+                        {Texts.citizens} {citizens}
                     </div>
 
-                    <div className={`feedback-box ${feedback ? "visible" : ""}`}>
-                        {feedback}
-                    </div>
+                    <div className={`feedback ${feedback ? "visible" : ""}`}>{feedback}</div>
 
-                    <div className="game-frame">
+                    <div
+                        className="game-frame"
+                        style={{ backgroundImage: `url(${gameBg})` }}
+                    >
                         <div className="citizens-panel">
-                            {CIVILIANS.slice(0, citizenCount).map((src, idx) => (
-                                <img key={idx} src={src} alt={`Citizen ${idx + 1}`} className="citizen-img" />
+                            {CIVS.slice(0, Math.min(citizens, MAX_SPRITES)).map((src, i) => (
+                                <img key={i} src={src} alt={`Citizen ${i + 1}`} className="citizen-img" />
                             ))}
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* RIGHT */}
             <div className="right-side">
                 {finished ? (
-                    <div className="end-screen">
-                        <h3>{Texts.end_title}</h3>
-                        <p>{Texts.end_summary(score, questions.length)}</p>
-                        <button className="restart-button" onClick={handleRestart}>
-                            {Texts.restart}
-                        </button>
+                    <div className="end">
+                        <h3>{Texts.endTitle}</h3>
+                        <p>{Texts.endSummary(citizens, questions.length)}</p>
+                        <button className="btn" onClick={restart}>{Texts.restart}</button>
                     </div>
                 ) : (
                     <>
-                        <div className="question-box">{currentQuestion.question}</div>
-                        <div className="answers-grid">
-                            {currentQuestion.answers.map((ans, idx) => (
+                        <div className="question">{cur.question}</div>
+                        <div className="answers">
+                            {cur.answers.map((ans, i) => (
                                 <button
-                                    key={idx}
-                                    className="answer-button"
-                                    onClick={() => handleAnswerClick(idx)}
-                                    disabled={isLocked}
+                                    key={i}
+                                    className="btn answer"
+                                    onClick={() => handleClick(ans)}
+                                    disabled={locked}
                                 >
                                     {ans}
                                 </button>

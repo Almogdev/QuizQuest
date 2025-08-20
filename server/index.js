@@ -231,18 +231,62 @@ app.get("/api/questions/:quiz_id", (req, res) => {
   });
 });
 
-app.get("/api/quiz/:quiz_by_id", (req, res) => {
-  let current_question_id = 1;
-  let quiz = [];
-  let question_to_insert = {
-    id: current_question_id,
-    answer_1: "",
-    answer_2: "",
-    answer_3: "",
-    answer_4: "",
-    currect_answer: ""
+// GET all questions for a given quiz, with correct answer TEXT (no index)
+app.get("/api/quiz/:quiz_id", (req, res) => {
+  const quizId = Number(req.params.quiz_id);
+  if (!Number.isFinite(quizId) || quizId <= 0) {
+    return res.status(400).json({ message: "Invalid quiz id" });
   }
-})
+
+  const sql = `
+    SELECT
+      id,
+      quiz_id,
+      question,
+      answer_1, answer_2, answer_3, answer_4,
+      correct_answer   -- TEXT column you added
+    FROM questions
+    WHERE quiz_id = ?
+    ORDER BY id ASC
+  `;
+
+  connection.execute(sql, [quizId], (err, rows) => {
+    if (err) {
+      console.error("Error fetching questions:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    const questions = rows.map((r) => {
+      // normalize to trimmed strings; drop empty answers so no "undefined" buttons
+      const answers = [r.answer_1, r.answer_2, r.answer_3, r.answer_4]
+        .map((v) => (v == null ? "" : String(v).trim()))
+        .filter((s) => s !== "");
+
+      const correctAnswer = String(r.correct_answer ?? "").trim();
+
+      // helpful warning if DB has mismatch
+      if (!answers.includes(correctAnswer)) {
+        console.warn(
+          `[quiz ${quizId}] qid=${r.id} correct_answer not found in answers`,
+          { correctAnswer, answers }
+        );
+      }
+
+      return {
+        id: r.id,
+        question: r.question ?? "",
+        answers,               // ["4","5","6","3"]
+        correctAnswer,         // e.g. "4"
+      };
+    });
+
+    res.status(200).json({
+      quizId,
+      count: questions.length,
+      questions,
+    });
+  });
+});
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));
