@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.36e1d44f.css",
-    "main.js": "/static/js/main.aba76f7b.js",
+    "main.js": "/static/js/main.0363a68f.js",
     "static/media/civ2.png": "/static/media/civ2.1c1831a25fc58ac7f5f7.png",
     "static/media/game_bg.png": "/static/media/game_bg.1057bb9f993158ab0a56.png",
     "static/media/civ1.png": "/static/media/civ1.17dd1701905f69c3abe1.png",
@@ -11,10 +11,10 @@
     "static/media/guest.png": "/static/media/guest.176704d00449fba7088b.png",
     "index.html": "/index.html",
     "main.36e1d44f.css.map": "/static/css/main.36e1d44f.css.map",
-    "main.aba76f7b.js.map": "/static/js/main.aba76f7b.js.map"
+    "main.0363a68f.js.map": "/static/js/main.0363a68f.js.map"
   },
   "entrypoints": [
     "static/css/main.36e1d44f.css",
-    "static/js/main.aba76f7b.js"
+    "static/js/main.0363a68f.js"
   ]
 }

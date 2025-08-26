@@ -38,13 +38,13 @@ const GameMainMenu = () => {
         <>
             <Header />
             <main className="gm-container">
-                {/* Start new quiz (hexagon) */}
+                {/* Start new quiz (hexagon)
                 <button
                     className="gm-cta"
                     onClick={() => console.log("Start new quiz clicked")}
                 >
                     Start new quiz
-                </button>
+                </button> */}
 
                 {/* Search */}
                 <div className="gm-search">

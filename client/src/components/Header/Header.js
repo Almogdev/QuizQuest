@@ -1,15 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "../../assets/QQ.png";
 import Logo_connected from "../../assets/user.png";
 import Logo_guest from "../../assets/guest.png";
 import "./Header.css";
 
+const getStoredUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem("user")) || null;
+  } catch {
+    return null;
+  }
+};
+
 const Header = ({ userData, setUserData }) => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const toggleMenu = () => setMenuOpen(prev => !prev);
+  // local fallback if no props are passed
+  const [localUser, setLocalUser] = useState(getStoredUser());
+  const user = userData ?? localUser;
+
+  useEffect(() => {
+    // initial load
+    setLocalUser(getStoredUser());
+
+    // keep in sync if login/logout happens in another tab
+    const onStorage = () => setLocalUser(getStoredUser());
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
 
   const handleLoginNavigate = () => {
     navigate("/login");
@@ -20,7 +42,8 @@ const Header = ({ userData, setUserData }) => {
     if (window.confirm("האם אתה בטוח שברצונך להתנתק?")) {
       localStorage.removeItem("user");
       localStorage.removeItem("token");
-      setUserData(null);
+      setLocalUser(null);              // update internal state
+      if (setUserData) setUserData(null); // respect external state if provided
       setMenuOpen(false);
       navigate("/");
     }
@@ -41,15 +64,15 @@ const Header = ({ userData, setUserData }) => {
 
       <div className="header-right">
         <img
-          src={userData ? Logo_connected : Logo_guest}
+          src={user ? Logo_connected : Logo_guest}
           alt="Profile"
           className="profile-button"
           onClick={toggleMenu}
         />
         <div className={`profile-menu ${menuOpen ? "open" : ""}`}>
-          {!userData && <button onClick={handleLoginNavigate}>Log In</button>}
+          {!user && <button onClick={handleLoginNavigate}>Log In</button>}
           <button onClick={() => navigate("/profile")}>My Profile</button>
-          {userData && <button onClick={handleLogout}>Sign Out</button>}
+          {user && <button onClick={handleLogout}>Sign Out</button>}
           <button onClick={handleRegister}>Register</button>
         </div>
       </div>

@@ -48,6 +48,7 @@ const QuizGame = ({ onFinish }) => {
             setFinished(false);
 
             try {
+                // NOTE: הקומפוננטה הזו משתמשת ב-/api/quiz/:id שמחזיר correctAnswer כטקסט
                 const res = await fetch(`/api/quiz/${quizId}`);
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
@@ -76,6 +77,27 @@ const QuizGame = ({ onFinish }) => {
 
     const cur = useMemo(() => (questions.length ? questions[idx] : null), [questions, idx]);
 
+    // ✨ NEW: submit the final score to the server
+    const submitResult = async (finalScore, quiz) => {
+        const token = localStorage.getItem("token");
+        if (!token) return; // Guests play without server writes
+        try {
+            await fetch("/api/game/submit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    quizId: Number(quiz) || 1,
+                    scoreDelta: Number(finalScore) || 0,
+                }),
+            });
+        } catch (e) {
+            console.error("Submit result failed:", e);
+        }
+    };
+
     if (loading) return <div className="status">{Texts.loading}</div>;
     if (loadError) return <div className="status error">{loadError}</div>;
     if (!cur) return <div className="status">{Texts.loading}</div>;
@@ -88,8 +110,9 @@ const QuizGame = ({ onFinish }) => {
         const correct = String(cur.correctAnswer ?? "").trim();
         const isCorrect = clicked === correct;
 
-        // Use functional updates so we always add/remove exactly one
-        setCitizens((prev) => (isCorrect ? prev + 1 : Math.max(prev - 1, 0)));
+        // חישוב לוקאלי – ואז setCitizens + שימוש מיידי בערך החדש
+        const nextCitizens = isCorrect ? citizens + 1 : Math.max(citizens - 1, 0);
+        setCitizens(nextCitizens);
         setFeedback(isCorrect ? Texts.correct : Texts.wrong);
 
         setTimeout(() => {
@@ -98,20 +121,22 @@ const QuizGame = ({ onFinish }) => {
 
             setIdx((prevIdx) => {
                 const next = prevIdx + 1;
-                if (next < questions.length) return next;
+                const isLast = next >= questions.length;
 
-                setFinished(true);
-                if (typeof onFinish === "function") {
-                    // Compute final score from the latest state after the functional update
-                    // Note: queue a microtask to read the latest value
-                    Promise.resolve().then(() => {
-                        onFinish({ score: document.querySelector(".pill")?.textContent?.match(/\d+$/)?.[0] ? Number(document.querySelector(".pill").textContent.match(/\d+$/)[0]) : 0, total: questions.length });
-                    });
+                if (!isLast) return next;
+
+                if (!finished) {
+                    setFinished(true);
+                    submitResult(nextCitizens, quizId); // ← כאן התיקון
+                    if (typeof onFinish === "function") {
+                        onFinish({ score: nextCitizens, total: questions.length, quizId });
+                    }
                 }
                 return prevIdx;
             });
         }, 800);
     };
+
 
     const restart = () => {
         setIdx(0);
