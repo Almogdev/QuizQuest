@@ -1,0 +1,229 @@
+/* Container */
+.lb-container {
+    padding: 24px 16px;
+    max-width: 1100px;
+    margin: 0 auto;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* Status messages */
+.lb-status {
+    text-align: center;
+    margin-bottom: 12px;
+    opacity: 0.9;
+}
+
+.lb-error {
+    color: #b44;
+}
+
+/* ---- PODIUM ---- */
+.lb-podium {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+    align-items: end;
+    justify-items: center;
+    margin-bottom: 28px;
+}
+
+.podium-card {
+    position: relative;
+    width: 260px;
+    min-height: 220px;
+    padding: 18px 16px 22px;
+    border: 2px solid #222;
+    border-radius: 28px;
+    background: #fff;
+    text-align: center;
+    box-shadow: 0 4px 0 #222;
+}
+
+.podium-card.highlight {
+    transform: translateY(-18px);
+}
+
+/* place colors */
+.podium-card.gold {
+    border-color: #d4af37;
+    /* Gold */
+    box-shadow: 0 4px 0 #b9931c;
+    background: linear-gradient(180deg, #fff7d1 0%, #fce58a 100%);
+}
+
+.podium-card.silver {
+    border-color: #c0c0c0;
+    /* Silver */
+    box-shadow: 0 4px 0 #9b9b9b;
+    background: linear-gradient(180deg, #f7f7f7 0%, #dcdcdc 100%);
+}
+
+.podium-card.bronze {
+    border-color: #cd7f32;
+    /* Bronze */
+    box-shadow: 0 4px 0 #a46322;
+    background: linear-gradient(180deg, #ffe0c0 0%, #e3a464 100%);
+}
+
+/* rank badge */
+.rank-badge {
+    position: absolute;
+    top: -14px;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    border: 2px solid #222;
+    background: #fff;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    box-shadow: 0 3px 0 #222;
+}
+
+.podium-card.gold .rank-badge {
+    background: #d4af37;
+    color: #fff;
+    border-color: #b9931c;
+}
+
+.podium-card.silver .rank-badge {
+    background: #c0c0c0;
+    color: #fff;
+    border-color: #9b9b9b;
+}
+
+.podium-card.bronze .rank-badge {
+    background: #cd7f32;
+    color: #fff;
+    border-color: #a46322;
+}
+
+.logo {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    border: 2px solid #222;
+    object-fit: cover;
+    margin: 8px auto 10px;
+    box-shadow: 0 3px 0 #222;
+    background: #f4f4f4;
+}
+
+.logo-sm {
+    width: 48px;
+    height: 48px;
+    margin: 0;
+}
+
+.avatar {
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.school-name {
+    margin: 6px 0 2px;
+    font-size: 18px;
+    font-weight: 800;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.school-city {
+    opacity: 0.8;
+    margin-bottom: 6px;
+}
+
+.school-score {
+    margin-top: 4px;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+/* ---- LIST 4+ ---- */
+.lb-list {
+    display: grid;
+    gap: 12px;
+}
+
+.row-item {
+    display: grid;
+    grid-template-columns: 60px 1fr 160px 120px 70px;
+    /* rank | name | city | score | logo */
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 2px solid #222;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 4px 0 #222;
+}
+
+.row-rank {
+    font-weight: 900;
+    font-size: 18px;
+    text-align: center;
+}
+
+.row-name {
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.row-city {
+    opacity: 0.9;
+}
+
+.row-score {
+    font-weight: 800;
+    text-align: center;
+}
+
+.row-logo {
+    display: grid;
+    place-items: center;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .podium-card {
+        width: 220px;
+    }
+
+    .row-item {
+        grid-template-columns: 50px 1fr 120px 90px 60px;
+    }
+}
+
+@media (max-width: 700px) {
+    .lb-podium {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+        justify-items: stretch;
+    }
+
+    .podium-card {
+        width: 100%;
+    }
+
+    .podium-card.highlight {
+        transform: none;
+    }
+
+    .row-item {
+        grid-template-columns: 44px 1fr 1fr;
+    }
+
+    .row-city,
+    .row-logo {
+        display: none;
+    }
+
+    /* simplify on small screens */
+}

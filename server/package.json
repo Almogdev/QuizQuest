@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@vis.gl/react-google-maps": "^1.5.5",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "express": "^4.21.2",

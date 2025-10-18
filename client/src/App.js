@@ -3,9 +3,11 @@ import HomePage from "./pages/HomePage/HomePage";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import ProfilePage from "./pages/Profile/ProfilePage";
-import LeaderboardPage from "./pages/Leaderboard/LeaderboardPage";
+import MapPage from "./pages/map/map";
 import GameMainMenu from "./pages/GameMainMenu/GameMainMenu";
 import GamePage from "./pages/GamePage/GamePage";
+import TestPage from "./pages/Tests/tests";
+import Leaderboard from "./pages/Leaderboard/Leaderboard"
 
 function App() {
   return (
@@ -25,7 +27,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
 
           {/* טבלת מובילים + מפה ארצית */}
-          <Route path="/leaderboard" element={<LeaderboardPage />} />
+          <Route path="/Map" element={<MapPage />} />
 
           {/* תפריט משחק */}
           <Route path="/game-menu" element={<GameMainMenu />} />
@@ -33,6 +35,11 @@ function App() {
           {/* דף המשחק */}
           <Route path="/game/:id" element={<GamePage />} />
 
+          {/* דף המשחק */}
+          <Route path="/Leaderboard" element={<Leaderboard />} />
+
+          {/* דף טסטים */}
+          <Route path="/test" element={<TestPage />} />
         </Routes>
       </Router>
     </div>

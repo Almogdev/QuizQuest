@@ -367,6 +367,54 @@ app.get("/api/quizzes", (req, res) => {
   });
 });
 
+// leaderboard setup
+app.get("/api/leaderboard", (req, res) => {
+  console.log("📊 [Leaderboard] Request received...");
+
+  const sql = `
+    SELECT 
+      id,
+      name,
+      city,
+      score,
+      logo
+    FROM schools_data
+    ORDER BY score DESC
+    LIMIT 100
+  `;
+
+  connection.execute(sql, (err, rows) => {
+    if (err) {
+      console.error("❌ [Leaderboard] Database error:", err.message);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    if (!rows || rows.length === 0) {
+      console.warn("⚠️ [Leaderboard] No schools found in database.");
+      return res.json([]);
+    }
+
+    const withRank = rows.map((r, i) => ({
+      ...r,
+      rank: i + 1
+    }));
+
+    console.log(`✅ [Leaderboard] Query successful! ${withRank.length} schools found.`);
+    console.table(
+      withRank.map((r) => ({
+        Rank: r.rank,
+        Name: r.name,
+        City: r.city,
+        Score: r.score
+      }))
+    );
+
+    res.json(withRank);
+  });
+});
+
+
+
 // ==================== CATCH-ALL (keep last) ====================
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));

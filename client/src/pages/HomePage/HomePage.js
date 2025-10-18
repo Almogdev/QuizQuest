@@ -21,8 +21,9 @@ const HomePage = () => {
         {!isGameStarted ? (
           <>
             <button onClick={() => navigate("/game-menu")}>Start Quiz</button>
+            <button onClick={() => navigate("/Map")}>Map</button>
+            <button onClick={() => navigate("/Leaderboard")}>Leaderboard</button>
             <button>Create Quiz</button>
-            <button>Leaderboard</button>
           </>
         ) : (
           <QuizGame />
