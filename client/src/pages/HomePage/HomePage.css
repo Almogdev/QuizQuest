@@ -17,11 +17,14 @@ div {
 /* כפתורים מרכזיים */
 main {
   display: flex;
-  flex-direction: column; /* מסדר את הכפתורים בטור כברירת מחדל */
+  flex-direction: column;
+  /* מסדר את הכפתורים בטור כברירת מחדל */
   align-items: center;
-  gap: 20px; /* מוסיף רווח אנכי בין הכפתורים */
+  gap: 20px;
+  /* מוסיף רווח אנכי בין הכפתורים */
   padding: 20px;
-  margin-bottom: 60px; /* מרווח נוסף בין הכפתורים ל-footer */
+  margin-bottom: 60px;
+  /* מרווח נוסף בין הכפתורים ל-footer */
 }
 
 main button {
@@ -32,8 +35,10 @@ main button {
   padding: 15px 30px;
   font-size: 18px;
   cursor: pointer;
-  width: 80%; /* מתאים למובייל */
-  max-width: 300px; /* מגביל את הגודל במסכים גדולים */
+  width: 80%;
+  /* מתאים למובייל */
+  max-width: 300px;
+  /* מגביל את הגודל במסכים גדולים */
 }
 
 main button:hover {
@@ -48,7 +53,8 @@ footer {
   width: 100%;
   text-align: left;
   padding: 10px;
-  background-color: #4caf50; /* ירוק כמו הכותרת העליונה */
+  background-color: #4caf50;
+  /* ירוק כמו הכותרת העליונה */
   font-size: 14px;
   color: white;
   box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
@@ -59,8 +65,10 @@ footer {
 header .profile-container {
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* ממקם את התמונה בצד ימין */
-  margin-left: auto; /* מצמיד את הקונטיינר לימין */
+  justify-content: flex-end;
+  /* ממקם את התמונה בצד ימין */
+  margin-left: auto;
+  /* מצמיד את הקונטיינר לימין */
   position: relative;
 }
 
@@ -69,22 +77,29 @@ header .profile-container {
   height: 50px;
   border-radius: 50%;
   cursor: pointer;
-  border: 2px solid white; /* מסגרת סביב התמונה */
-  background-color: #f5f5f5; /* רקע במקרה שהתמונה ריקה */
-  object-fit: cover; /* מתאים את התמונה */
+  border: 2px solid white;
+  /* מסגרת סביב התמונה */
+  background-color: #f5f5f5;
+  /* רקע במקרה שהתמונה ריקה */
+  object-fit: cover;
+  /* מתאים את התמונה */
   transition: transform 0.2s ease;
 }
 
 .profile-button:hover {
-  transform: scale(1.1); /* אפקט hover */
+  transform: scale(1.1);
+  /* אפקט hover */
 }
 
 /* תפריט הפרופיל */
 .profile-menu {
   position: absolute;
-  top: 100%; /* מיקום התפריט בדיוק מתחת לכפתור */
-  left: 50%; /* מיושר לאמצע הכפתור */
-  transform: translate(-50%, 10px); /* ממרכז את התפריט ומרחיק אותו מעט */
+  top: 100%;
+  /* מיקום התפריט בדיוק מתחת לכפתור */
+  left: 50%;
+  /* מיושר לאמצע הכפתור */
+  transform: translate(-50%, 10px);
+  /* ממרכז את התפריט ומרחיק אותו מעט */
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 5px;

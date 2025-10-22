@@ -413,6 +413,22 @@ app.get("/api/leaderboard", (req, res) => {
   });
 });
 
+// GET /api/schools – return all schools with coordinates
+app.get("/api/schools", (req, res) => {
+  const query = `
+    SELECT 
+      id, name, city, score, lat, lng, logo, best_category
+    FROM schools_data
+  `;
+  connection.execute(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching schools:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    res.json(results);
+  });
+});
+
 
 
 // ==================== CATCH-ALL (keep last) ====================
