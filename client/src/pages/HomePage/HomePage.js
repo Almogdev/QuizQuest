@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./HomePage.css";
 import Header from "../../components/Header/Header.js";
 import Footer from "../../components/Footer/Footer.js";
+import bg from "../../assets/bg.png";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -11,22 +12,26 @@ const HomePage = () => {
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
-  const [isGameStarted, setIsGameStarted] = useState(false);
+  const [isGameStarted] = useState(false);
 
   return (
     <div className="app-container">
       <Header userData={userData} setUserData={setUserData} />
 
-      <main>
-        {!isGameStarted ? (
-          <>
-            <button onClick={() => navigate("/game-menu")}>Start Quiz</button>
-            <button onClick={() => navigate("/Map")}>Map</button>
-            <button onClick={() => navigate("/Leaderboard")}>Leaderboard</button>
-          </>
-        ) : (
-          <QuizGame />
-        )}
+      <main className="home-main">
+        {/* רקע זז מתחת לתוכן */}
+        <div className="moving-bg" style={{ backgroundImage: `url(${bg})` }} />
+
+        {/* תוכן מעל הרקע */}
+        <div className="home-content">
+          {!isGameStarted ? (
+            <>
+              <button onClick={() => navigate("/game-menu")}>Start Quiz</button>
+              <button onClick={() => navigate("/map")}>Map</button>
+              <button onClick={() => navigate("/leaderboard")}>Leaderboard</button>
+            </>
+          ) : null}
+        </div>
       </main>
 
       <Footer />
