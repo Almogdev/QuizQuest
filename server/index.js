@@ -238,7 +238,6 @@ app.post("/api/game/submit", (req, res) => {
   });
 });
 
-
 // ==================== QUIZZES & QUESTIONS ====================
 
 // Legacy-style: questions with numeric index (0-based) — still available if needed
@@ -428,8 +427,6 @@ app.get("/api/schools", (req, res) => {
     res.json(results);
   });
 });
-
-
 
 // ==================== CATCH-ALL (keep last) ====================
 app.get("*", (req, res) => {
