@@ -56,7 +56,7 @@ const Header = ({ userData, setUserData }) => {
   return (
     <header className="header">
       <div className="header-left">
-        <button>⚙️ Settings</button>
+        {/* <button>⚙️ Settings</button> */}
         <button onClick={() => navigate("/")}>🏠 Back to Home page</button>
       </div>
 
