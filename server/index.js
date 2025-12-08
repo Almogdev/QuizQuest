@@ -163,8 +163,6 @@ app.post("/api/game/submit", (req, res) => {
       console.error("[/api/game/submit] TX begin failed:", err?.message);
       return res.status(500).json({ message: "TX begin failed" });
     }
-
-    // 1) update user (NULL-safe)
     const sqlUser =
       "UPDATE player_data SET personal_score = COALESCE(personal_score,0) + ? WHERE id = ?";
     connection.execute(sqlUser, [delta, userId], (e1, r1) => {
