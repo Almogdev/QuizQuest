@@ -5,13 +5,13 @@ import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 
 const GamePage = () => {
-    const { id } = useParams(); // קבלת ה-id מה-URL
+    const { id } = useParams();
 
     return (
         <>
             <Header />
             <main>
-                <QuizGame quizId={id} /> {/* שולחים את ה-id ל-QuizGame */}
+                <QuizGame quizId={id} />
             </main>
             <Footer />
         </>
